@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from 'react-native';
 
-import CityApp from './Components/Cities/CityApp'
+import CityApp from './Projects/CityApp'
 
 export default class App extends Component {
   render() {

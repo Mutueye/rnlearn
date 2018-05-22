@@ -6,8 +6,8 @@ import {
   AsyncStorage
 } from 'react-native';
 
-import styles from '../../styles';
-import Tabs from '../../routes';
+import styles from './styles';
+import Tabs from './routes';
 
 const key = 'cities';
 
@@ -70,7 +70,7 @@ export default class CityApp extends Component {
           addLocation : this.addLocation
         }}
       />
-    ) 
+    )
 
   }
 }
