@@ -8,11 +8,13 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 import Home from './screens/Home'
 
 EStyleSheet.build({
-  $PrimaryBlue : '#377df6',
-  $white : '#ffffff',
-  $border : '#e0e0e9',
+  $primaryBlue : '#4F6D7A',
+  $white : '#FFFFFF',
+  $border : '#E2E2E2',
   $inputText: '#797979',
-  $lightGray: '#f0f0f0'
+  $lightGray: '#F0F0F0',
+
+  //$outline : 1
 })
 
 export default () => <Home />
