@@ -4,9 +4,10 @@ import CityApp from './Projects/CityApp'
 import RNFlatList from './Projects/RNFlatList'
 import RNRedux from './Projects/RNRedux'
 import CurrencyConverter from './Projects/CurrencyConverter'
+import TabView from './Projects/TabView'
 
 export default class App extends Component {
   render() {
-    return <CurrencyConverter />
+    return <TabView />
   }
 }
