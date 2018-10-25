@@ -11,6 +11,7 @@ import {
   TabBar,
   SceneMap
 } from 'react-native-tab-view';
+import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons'
 
 import Constants from '../../utils/Constants';
 
@@ -62,7 +63,13 @@ export default class Index extends Component {
     )
   };
 
-  _firstRoute = () => <View style={{flex: 1, backgroundColor: '#ff4081'}} />;
+  _firstRoute = () => <View style={{flex: 1, backgroundColor: '#ff4081'}} >
+    <MaterialIcons
+      name='search' 
+      size={22} 
+      color='#bbb'
+    />
+  </View>;
 
   _secondRoute = () => <View style={{flex: 1, backgroundColor: '#673ab7'}} />;
 
@@ -112,7 +119,10 @@ export default class Index extends Component {
           renderScene={this._renderScene}
           renderTabBar={this._renderTabBar}
           onIndexChange={this._handleIndexChange}
-          initialLayout={{width: Constants.screenWidth}}
+          initialLayout={{
+            width: Constants.screenWidth,
+            height: 0
+          }}
         />
       </View>
     )
