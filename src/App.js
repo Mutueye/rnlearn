@@ -9,6 +9,6 @@ import CollapsableTabView from './Projects/CollapsableTabView'
 
 export default class App extends Component {
   render() {
-    return <CollapsableTabView />
+    return <TabView />
   }
 }

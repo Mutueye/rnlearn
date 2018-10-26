@@ -11,9 +11,9 @@ import {
   TabBar,
   SceneMap
 } from 'react-native-tab-view';
+import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons'
 
 import Constants from '../../utils/Constants';
-import List from './components/List'
 
 const styles = StyleSheet.create({
   statusbar: {
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   tabStyle: {
-    height: 50
+    height: 60
   },
   labelStyle: {
     margin: 0,
@@ -54,7 +54,7 @@ export default class Index extends Component {
   _renderTabBar = props => {
     return (
       <TabBar 
-        {...props}
+        {...props} 
         labelStyle={styles.labelStyle}
         renderIndicator={this._renderIndicator}
         tabStyle={styles.tabStyle}
@@ -63,9 +63,15 @@ export default class Index extends Component {
     )
   };
 
-  _firstRoute = () => <List listLength={30} tabIndex={0}/>;
+  _firstRoute = () => <View style={{flex: 1, backgroundColor: '#ff4081'}} >
+    <MaterialIcons
+      name='search' 
+      size={22} 
+      color='#bbb'
+    />
+  </View>;
 
-  _secondRoute = () => <List listLength={20} tabIndex={1} />;
+  _secondRoute = () => <View style={{flex: 1, backgroundColor: '#673ab7'}} />;
 
   _renderScene = SceneMap({
     first: this._firstRoute,
