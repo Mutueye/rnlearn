@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-
-import Variables from '../variables'
-import Constants from '../../../utils/Constants'
+import { View, StyleSheet } from 'react-native';
+import FlatList from './FlatList';
+import Variables from '../variables';
+import Constants from '../../../utils/Constants';
 
 const fullHeaderHeight = Variables.collapsibleHeight + Constants.tabBarHeight
 
@@ -31,6 +31,7 @@ export default class Tab extends React.PureComponent {
       <FlatList
         style={styles.wrapper}
         data={this.state.dataSource}
+        tabRoute={this.props.route.key}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={[
