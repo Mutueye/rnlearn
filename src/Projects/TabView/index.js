@@ -49,7 +49,11 @@ export default class Index extends Component {
     ]
   };
   
-  _handleIndexChange = index => this.setState({ index });
+  _handleIndexChange = index => {
+    this.setState({ index }, () => {
+      
+    });
+  }
 
   _renderTabBar = props => {
     return (

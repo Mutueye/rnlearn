@@ -16,8 +16,8 @@ class FlatListHelper extends React.PureComponent {
     }, 250);
   }
 
-  scrollToOffset = (offset, animated = true) => {
-    this.flatList.getNode().scrollToOffset({offset, animated});
+  scrollToOffset = (offset, isAnimated = true) => {
+    this.flatList.getNode().scrollToOffset({offset, isAnimated});
   };
 
   _onMomentumScrollBegin = () =>  this.props._canJumpToTab(false);  
