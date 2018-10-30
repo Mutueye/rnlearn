@@ -20,15 +20,11 @@ const styles = StyleSheet.create({
     color: Colors.f_title
   },
   barStyle: {
-    backgroundColor: 'transparent',
+    backgroundColor: Colors.white,
     height: Constants.tabBarHeight,
     elevation: 0,
     shadowOpacity: 0,
     borderBottomColor: Colors.line
-  },
-  container: {
-    borderBottomColor: Colors.line,
-    backgroundColor: Colors.white
   }
 });
 

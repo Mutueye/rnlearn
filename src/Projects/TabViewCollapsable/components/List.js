@@ -26,6 +26,7 @@ export default class Tab extends React.PureComponent {
       <FlatList
         style={styles.wrapper}
         data={this.state.dataSource}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({item}) => (
           <View style={styles.item} />

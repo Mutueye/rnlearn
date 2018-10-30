@@ -5,16 +5,9 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import Constants from '../../utils/Constants';
 import Colors from '../../utils/Colors';
 import List from './components/List';
+import Header from './components/header';
 import Tabbar from './components/tabbar';
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    flexDirection: 'column',
-    width: '100%',
-    backgroundColor: Colors.white
-  }
-});
+import CollapsableHeader from './components/tabbar/collapsableHeader'
 
 export default class Index extends Component {
 
@@ -34,16 +27,11 @@ export default class Index extends Component {
   render() {
     return (
       <View style={styles.wrapper}>
-        <StatusBar
-          animated={true}
-          hidden={false}
-          backgroundColor={'transparent'}
-          translucent={true}
-          barStyle='dark-content'/>
+        <Header title="顶部栏可伸缩的标签页" isAbsoulte={true} hasBottomLine={true} />
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}
-          renderTabBar={props => <Tabbar {...props} />}
+          renderTabBar={props => <CollapsableHeader renderTabBar={()=><Tabbar {...props} />} />}
           onIndexChange={index => this.setState({ index })}
           initialLayout={{
             width: Constants.screenWidth,
@@ -53,3 +41,18 @@ export default class Index extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    flexDirection: 'column',
+    width: '100%',
+    backgroundColor: Colors.white
+  },
+  barStyle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0
+  }
+});

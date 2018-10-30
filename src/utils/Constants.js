@@ -13,7 +13,9 @@ export default Constants = {
   screenWidth: sWidth, //屏幕宽度
   screenHeight: sHeight, //屏幕高度
   statusBarHeight: getStatusBarHeight(), //状态了高度
+  headerHeight: 44*rem,
   commonSpace: 16*rem,
   tabBarHeight: 50*rem,
-  fsize_tabbar: 15*rem
+  fsize_tabbar: 15*rem,
+  zIndexHeader: 9999
 }
