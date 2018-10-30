@@ -67,6 +67,7 @@ export class BottomSheet extends Component {
       /*
       if(value <= SNAP_POINTS_FROM_TOP[0] || value >= SNAP_POINTS_FROM_TOP[2]) {
         
+        
       }*/
       this._translateYOffsetValue = value;
     })
@@ -93,15 +94,16 @@ export class BottomSheet extends Component {
   };
   
   _onHandlerStateChange = ({ nativeEvent }) => {
-    /*
+    let { velocityY, translationY } = nativeEvent;
+    translationY -= this._lastScrollYValue;
+    
     if (nativeEvent.state === State.BEGAN) {
       Animated.decay(this._translateYOffset).stop()
-    }*/
+      //console.log('begin v:::', velocityY)
+    }
     
     if (nativeEvent.oldState === State.ACTIVE) {
-      let { velocityY, translationY } = nativeEvent;
-      translationY -= this._lastScrollYValue;
-      console.log('after v', translationY, this._lastScrollYValue)
+      console.log('after v', velocityY)
       //console.log('NATIVE EVENT:::::::', nativeEvent)
       
       /*const dragToss = 0.2;

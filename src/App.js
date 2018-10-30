@@ -10,6 +10,6 @@ import GestureHandler from './Projects/GestureHandler'
 
 export default class App extends Component {
   render() {
-    return <GestureHandler />
+    return <TabView />
   }
 }

@@ -36,13 +36,9 @@ export class BottomSheet extends Component {
     );
     this._lastScrollY.addListener(({ value }) => {
       this._lastScrollYValue = value;
-      console.log('_reverseLastScrollY', -1*value)
     });
 
     this._dragY = new Animated.Value(0);
-    this._dragY.addListener(({value}) => {
-      console.log('_dragY', value)
-    })
     this._onGestureEvent = Animated.event(
       [{ nativeEvent: { translationY: this._dragY } }],
       { useNativeDriver: USE_NATIVE_DRIVER }
@@ -52,24 +48,8 @@ export class BottomSheet extends Component {
       new Animated.Value(-1),
       this._lastScrollY
     );
-    
-    
-    this._translateYOffsetValue = 0;
+
     this._translateYOffset = new Animated.Value(END);
-    this._translateYOffset.addListener(({value}) => {
-      if(value < SNAP_POINTS_FROM_TOP[0]) {
-        this._translateYOffset.setValue(SNAP_POINTS_FROM_TOP[0]);
-        Animated.decay(this._translateYOffset).stop();
-      } else if(value > SNAP_POINTS_FROM_TOP[2]) {
-        this._translateYOffset.setValue(SNAP_POINTS_FROM_TOP[2]);
-        Animated.decay(this._translateYOffset).stop();
-      }
-      /*
-      if(value <= SNAP_POINTS_FROM_TOP[0] || value >= SNAP_POINTS_FROM_TOP[2]) {
-        
-      }*/
-      this._translateYOffsetValue = value;
-    })
     this._translateY = Animated.add(
       this._translateYOffset,
       Animated.add(this._dragY, this._reverseLastScrollY)
@@ -93,19 +73,20 @@ export class BottomSheet extends Component {
   };
   
   _onHandlerStateChange = ({ nativeEvent }) => {
-    /*
+    let { velocityY, translationY } = nativeEvent;
+    translationY -= this._lastScrollYValue;
+    
     if (nativeEvent.state === State.BEGAN) {
       Animated.decay(this._translateYOffset).stop()
-    }*/
+      console.log('begin v:::', velocityY)
+    }
     
     if (nativeEvent.oldState === State.ACTIVE) {
-      let { velocityY, translationY } = nativeEvent;
-      translationY -= this._lastScrollYValue;
-      console.log('after v', translationY, this._lastScrollYValue)
-      //console.log('NATIVE EVENT:::::::', nativeEvent)
+      console.log('after v', velocityY)
+      console.log('NATIVE EVENT:::::::', nativeEvent)
       
-      /*const dragToss = 0.2;
-      const endOffsetY = this.state.lastSnap + translationY + dragToss * velocityY;
+      const dragToss = 0.2;
+      /*const endOffsetY = this.state.lastSnap + translationY + dragToss * velocityY;
       let destSnapPoint = SNAP_POINTS_FROM_TOP[0];
       for (let i = 0; i < SNAP_POINTS_FROM_TOP.length; i++) {
         const snapPoint = SNAP_POINTS_FROM_TOP[i];
@@ -116,21 +97,21 @@ export class BottomSheet extends Component {
       }*/
       
       const endOffsetY = this.state.lastSnap + translationY;
-      //let finalTranslationY = translationY;
+      let finalTranslationY = translationY;
       let destSnapPoint = endOffsetY;
       if(destSnapPoint <= SNAP_POINTS_FROM_TOP[0]) {
         destSnapPoint = SNAP_POINTS_FROM_TOP[0];
       } else if(endOffsetY >= SNAP_POINTS_FROM_TOP[2]) {
         destSnapPoint = SNAP_POINTS_FROM_TOP[2];
       }
-      //finalTranslationY = translationY - (endOffsetY - destSnapPoint)
+      finalTranslationY = translationY - (endOffsetY - destSnapPoint)
       //console.log(finalTranslationY, destSnapPoint, endOffsetY);
       
-      //this.setState({ lastSnap: destSnapPoint });
-      //this._translateYOffset.extractOffset();
-      //this._translateYOffset.setValue(finalTranslationY);
-      this._translateYOffset.setValue(destSnapPoint);
-      //this._translateYOffset.flattenOffset();
+      this.setState({ lastSnap: destSnapPoint });
+      this._translateYOffset.extractOffset();
+      this._translateYOffset.setValue(finalTranslationY);
+      //this._translateYOffset.setValue(destSnapPoint);
+      this._translateYOffset.flattenOffset();
       this._dragY.setValue(0);
       /*
       Animated.spring(this._translateYOffset, {
@@ -140,14 +121,12 @@ export class BottomSheet extends Component {
         toValue: destSnapPoint,
         useNativeDriver: USE_NATIVE_DRIVER,
       }).start();*/
-      
+      /*
       Animated.decay(this._translateYOffset, {
         velocity: 0.001*velocityY,
         deceleration: 0.997,
         useNativeDriver: USE_NATIVE_DRIVER
-      }).start(({finished})=>{
-        this.setState({ lastSnap: this._translateYOffsetValue })
-      });
+      }).start();*/
     }
   };
   render() {
