@@ -7,7 +7,7 @@ import Colors from '../../utils/Colors';
 import List from './components/List';
 import Header from './components/header';
 import Tabbar from './components/tabbar';
-import CollapsableHeader from './components/tabbar/collapsableHeader'
+import CollapsibleHeader from './components/tabbar/collapsibleHeader'
 
 export default class Index extends Component {
 
@@ -31,7 +31,7 @@ export default class Index extends Component {
         <TabView
           navigationState={this.state}
           renderScene={this._renderScene}
-          renderTabBar={props => <CollapsableHeader renderTabBar={()=><Tabbar {...props} />} />}
+          renderTabBar={props => <CollapsibleHeader renderTabBar={()=><Tabbar {...props} />} />}
           onIndexChange={index => this.setState({ index })}
           initialLayout={{
             width: Constants.screenWidth,

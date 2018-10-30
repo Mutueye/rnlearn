@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native'; 
+import { View, StyleSheet, FlatList } from 'react-native';
+
+import Variables from '../variables'
+import Constants from '../../../utils/Constants'
+
+const fullHeaderHeight = Variables.collapsibleHeight + Constants.tabBarHeight
 
 export default class Tab extends React.PureComponent {
    constructor(props) {
@@ -28,6 +33,12 @@ export default class Tab extends React.PureComponent {
         data={this.state.dataSource}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={[
+          {
+            paddingTop: fullHeaderHeight
+          }, 
+          this.props.contentContainerStyle
+        ]}
         renderItem={({item}) => (
           <View style={styles.item} />
         )}

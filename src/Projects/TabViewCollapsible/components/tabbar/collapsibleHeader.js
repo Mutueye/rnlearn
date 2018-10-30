@@ -8,11 +8,9 @@ import {
 
 import Colors from '../../../../utils/Colors';
 import Constants, { rem } from '../../../../utils/Constants';
+import Variables from '../../variables'
 
-const COLLAPSABLE_HEIGHT = 200*rem
-const COLLAPSABLE_ZINDEX = 100
-
-export default class CollapsableHeader extends Component {
+export default class CollapsibleHeader extends Component {
   
   render() {
     return (
@@ -32,11 +30,11 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     right: 0,
-    zIndex: COLLAPSABLE_ZINDEX
+    zIndex: 100
   },
   topbar: {
     width: '100%',
-    height: COLLAPSABLE_HEIGHT,
+    height: Variables.collapsibleHeight,
     backgroundColor: Colors.theme,
   }
 });
