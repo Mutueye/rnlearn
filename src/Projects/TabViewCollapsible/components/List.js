@@ -22,8 +22,7 @@ export default class Tab extends React.PureComponent {
   }
   
   static defaultProps = {
-    listLength : 20,
-    tabIndex: 0
+    listLength : 20
   }
 
   render() {
@@ -31,7 +30,7 @@ export default class Tab extends React.PureComponent {
       <FlatList
         style={styles.wrapper}
         data={this.state.dataSource}
-        tabRoute={this.props.route.key}
+        tabKey={this.props.route.key}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={[

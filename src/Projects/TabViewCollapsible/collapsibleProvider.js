@@ -5,16 +5,24 @@ import CollapseAnimCtrl from './collapseAnimCtrl';
 import { CollapsibleContext } from './collapsibleContext';
 
 export default class CollapsibleProvider extends React.Component {
+  
   constructor(props) {
     super(props);
 
-    this.collapseAnimCtrl = new CollapseAnimCtrl();
+    this.collapseAnimCtrl = new CollapseAnimCtrl({
+      scrollToOffset: (scrollOptions) => {
+        let tabKey = scrollOptions.tabKey ? scrollOptions.tabKey : this.props.currentTabKey;
+        let handlerFunction = this._scrollHnadlers[tabKey];
+        handlerFunction && handlerFunction(scrollOptions.offset, scrollOptions.animated);
+      }
+    });
 
     this.state = {
-      currentTab: null,
+      currentTabKey: null,
       canJumpToTab: true,
       contextProvider: {
-        animation: this.collapseAnimCtrl.collapseAnimProps
+        collapseAnimProps: this.collapseAnimCtrl.collapseAnimProps,
+        addScrollHandler: this._addScrollHandler
       }
     };
   }
@@ -22,6 +30,11 @@ export default class CollapsibleProvider extends React.Component {
   componentWillUnmount() {
     this.collapseAnimCtrl.destroy();
   }
+  
+  _scrollHnadlers = {};
+  _addScrollHandler = (tabKey, handlerFunction) => {
+    this._scrollHnadlers[tabKey] = handlerFunction;
+  };
 
   render() {
     return (

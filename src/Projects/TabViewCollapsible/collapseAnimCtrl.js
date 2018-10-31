@@ -7,7 +7,7 @@ export default class CollapseAnimCtrl {
   maxTopHeight = Constants.tabBarHeight + Variables.collapsibleHeight;
   minTopHeight = Constants.tabBarHeight + Constants.headerHeight;
   
-  scrollY = new Animated.Value(this.maxTopHeight);
+  scrollY = new Animated.Value(0);
   
   initialState = null
   
@@ -23,6 +23,16 @@ export default class CollapseAnimCtrl {
   _updateScroll = ({value}) => {
     console.log(value)
   };
+  
+  onTabPress = (route) => {
+    console.log(route)
+    /*
+    this.initialState.scrollToOffset({
+      tabKey: route.key,
+      offset: this.scrollY._value,
+      animated: true
+    });*/
+  }
   
   collapseAnimProps = {
     scrollY: this.scrollY,
