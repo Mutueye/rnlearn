@@ -14,10 +14,10 @@ export default class CollapsibleHeader extends Component {
   
   render() {
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, this.props.collapseAnimCtrl.getCollapseTransform()]}>
         <View style={styles.topbar} />
         {this.props.renderTabBar()}
-      </View>
+      </Animated.View>
     );
   }
 }

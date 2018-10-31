@@ -21,7 +21,10 @@ export default class Index extends Component {
     ]
   };
   
-  _handleIndexChange = (index) => {
+  _handleIndexChange = (index, collapseAnimCtrl) => {
+    if(this.state.routes[index].key != this.state.currentTabKey) {
+      collapseAnimCtrl.onTabChange(this.state.routes[index], this.state.currentTabKey);
+    }
     this.setState({
       currentTabKey: this.state.routes[index].key,
       index
@@ -34,11 +37,10 @@ export default class Index extends Component {
       renderTabBar={() => (
         <Tabbar
           onTabPress={({route}) => {
-            console.log('scrollY::::::',collapseAnimCtrl.scrollY._value)
-            collapseAnimCtrl.initialState.scrollToOffset({tabKey: this.state.currentTabKey, offset: collapseAnimCtrl.scrollY._value, animated: false})
+            /*
             if(route.key != this.state.currentTabKey) {
-              collapseAnimCtrl.onTabPress(route);
-            }
+              collapseAnimCtrl.onTabChange(route, currentTabKey);
+            }*/
           }}
           {...props}
         />
@@ -62,7 +64,7 @@ export default class Index extends Component {
                 navigationState={this.state}
                 renderScene={this._renderScene}
                 renderTabBar={this._renderHeader(collapseAnimCtrl)}
-                onIndexChange={index => this._handleIndexChange(index)}
+                onIndexChange={index => this._handleIndexChange(index, collapseAnimCtrl)}
                 initialLayout={{ width: Constants.screenWidth, height: 0 }}
               />
             </View>

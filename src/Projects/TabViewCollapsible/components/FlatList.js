@@ -6,10 +6,20 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 class FlatListHelper extends React.PureComponent {
   
+  constructor(props) {
+    super(props)
+    
+    this.state = {
+      lastScrollY: 0
+    }
+  }
+  
   componentDidMount() {
     let { tabKey, collapseAnimProps, addScrollHandler } = this.props;
     
-    addScrollHandler(tabKey, this.scrollToOffset);
+    addScrollHandler(tabKey, 'scrollToOffset', this.scrollToOffset);
+    addScrollHandler(tabKey, 'saveLastScrollY', this.saveLastScrollY);
+    addScrollHandler(tabKey, 'loadLastScrollY', this.loadLastScrollY);
     
     /*
     setTimeout(() => { // Fix bug initialScroll set
@@ -17,9 +27,17 @@ class FlatListHelper extends React.PureComponent {
     }, 250);*/
   }
 
-  scrollToOffset = (offset, isAnimated = true) => {
-    this.flatList.getNode().scrollToOffset({offset, isAnimated});
+  scrollToOffset = (offset, animated = true) => {
+    this.flatList.getNode().scrollToOffset({offset, animated});
   };
+  
+  saveLastScrollY = () => {
+    this.setState({ lastScrollY: this.props.collapseAnimProps.scrollY._value })
+  };
+  
+  loadLastScrollY = () => {
+    this.props.collapseAnimProps.scrollY.setValue(this.state.lastScrollY)
+  }
 
   render() {
     let { scrollY, maxTopHeight } = this.props.collapseAnimProps;
@@ -28,7 +46,7 @@ class FlatListHelper extends React.PureComponent {
     return (
       <AnimatedFlatList
         {...this.props}
-        bounces={false}
+        bounces={true}
         onContentSizeChange={(contentWidth, contentHeight)=>console.log(this.props.tabKey, ' height:::', contentHeight)}
         scrollEventThrottle={1}
         contentContainerStyle={[{ paddingTop: maxTopHeight }, contentContainerStyle ]}
