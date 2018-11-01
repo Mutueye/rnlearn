@@ -1,5 +1,5 @@
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 const sWidth = Dimensions.get('window').width;
 const sHeight = Dimensions.get('window').height;
@@ -10,6 +10,8 @@ const remWidth = sWidth > maxWidth ? maxWidth : sWidth < originWidth ? originWid
 export const rem = remWidth / 375;
 
 export default Constants = {
+  isIos: Platform.OS === 'ios',
+  isAndroid: Platform.OS === 'android',
   screenWidth: sWidth, //屏幕宽度
   screenHeight: sHeight, //屏幕高度
   statusBarHeight: getStatusBarHeight(), //状态了高度

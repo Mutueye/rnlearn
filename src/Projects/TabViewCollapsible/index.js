@@ -18,17 +18,20 @@ export default class Index extends Component {
     routes: [
       { key: 'first', title: 'First' },
       { key: 'second', title: 'Second' },
+      { key: 'third', title: 'Third'}
     ]
   };
   
-  _handleIndexChange = (index, collapseAnimCtrl) => {
-    if(this.state.routes[index].key != this.state.currentTabKey) {
-      collapseAnimCtrl.onTabChange(this.state.routes[index], this.state.currentTabKey);
+  _handleIndexChange = (index, collapseAnimCtrl, canJumpToTab) => {
+    if(canJumpToTab) {
+      if(this.state.routes[index].key != this.state.currentTabKey) {
+        collapseAnimCtrl.onTabChange(this.state.routes[index], this.state.currentTabKey);
+      }
+      this.setState({
+        currentTabKey: this.state.routes[index].key,
+        index
+      });
     }
-    this.setState({
-      currentTabKey: this.state.routes[index].key,
-      index
-    });
   }
   
   _renderHeader = (collapseAnimCtrl) => props => (
@@ -39,7 +42,10 @@ export default class Index extends Component {
           onTabPress={({route}) => {
             /*
             if(route.key != this.state.currentTabKey) {
-              collapseAnimCtrl.onTabChange(route, currentTabKey);
+              //console.log('on TabPress currentTabKey is', this.state.currentTabKey)
+              //collapseAnimCtrl.stopCurrentScrolling(this.state.currentTabKey);
+              collapseAnimCtrl.stopCurrentScrolling(this.state.currentTabKey);
+              //collapseAnimCtrl.syncScrollY();
             }*/
           }}
           {...props}
@@ -50,21 +56,22 @@ export default class Index extends Component {
 
   _renderScene = SceneMap({
     first: () => <List listLength={30} route={this.state.routes[0]}/>,
-    second: () => <List listLength={20} route={this.state.routes[1]} />
+    second: () => <List listLength={20} route={this.state.routes[1]} />,
+    third: () => <List listLength={2} route={this.state.routes[2]} />
   });
 
   render() {
     return (
-      <CollapsibleProvider currentTabKey={this.state.currentTabKey}>
+      <CollapsibleProvider currentTabKey={this.state.currentTabKey} routes={this.state.routes}>
         {
-          (collapseAnimCtrl) => (
+          (collapseAnimCtrl, { canJumpToTab }) => (
             <View style={styles.wrapper}>
               <Header title="顶部栏可折叠的标签页" isAbsoulte={true} hasBottomLine={true} />
               <TabView
                 navigationState={this.state}
                 renderScene={this._renderScene}
                 renderTabBar={this._renderHeader(collapseAnimCtrl)}
-                onIndexChange={index => this._handleIndexChange(index, collapseAnimCtrl)}
+                onIndexChange={index => this._handleIndexChange(index, collapseAnimCtrl, canJumpToTab)}
                 initialLayout={{ width: Constants.screenWidth, height: 0 }}
               />
             </View>

@@ -25,6 +25,20 @@ export default class CollapseAnimCtrl {
     console.log(value)
   };
   
+  syncScrollY = () => {
+    this.initialState.syncScrollY(this.scrollY._value, this.collapseRange);
+  }
+  
+  stopCurrentScrolling = (currentTabKey) => {
+    //stop current tab from momentum scrolling
+    console.log('STOP CURRENTTAB====================== ', currentTabKey, 'scrolling');
+    this.initialState.scrollToOffset({
+      tabKey: currentTabKey,
+      offset: this.scrollY._value,
+      animated: true
+    });
+  }
+  
   onTabChange = (route, currentTabKey) => {
     //console.log(route)
     /*
@@ -33,38 +47,25 @@ export default class CollapseAnimCtrl {
       offset: this.scrollY._value,
       animated: true
     });*/
-    
-    this.initialState.saveLastScrollY(currentTabKey);
-    
+    console.log('onTabChange')
     //stop current tab from momentum scrolling
-    this.initialState.scrollToOffset({
+    /*this.initialState.scrollToOffset({
       tabKey: currentTabKey,
       offset: this.scrollY._value,
       animated: false
-    });
-    
+    });*/
+    this.initialState.saveLastScrollY(currentTabKey);
     this.initialState.loadLastScrollY(route.key);
   }
   
   collapseAnimProps = {
     scrollY: this.scrollY,
-    maxTopHeight: this.maxTopHeight
+    maxTopHeight: this.maxTopHeight,
+    collapseRange: this.collapseRange,
+    syncScrollY: this.syncScrollY
   };
   
   getCollapseTransform() {
-    /*
-    let byScroll = Animated.add(
-      Animated.multiply(this.clampedScroll, -1),
-      this.scrollY.interpolate({ // To negative
-        inputRange: [0, 1],
-        outputRange: [0, -1],
-      }).interpolate({ // Add bottom height part 
-        inputRange: [-this.topPartHeight, 0],
-        outputRange: [0, this.minClamp],
-        extrapolate: 'clamp',
-      })
-    );*/
-
     return {
       transform: [{
         translateY: this.scrollY.interpolate({
@@ -75,6 +76,5 @@ export default class CollapseAnimCtrl {
       }]
     };
   }
-  
   
 }

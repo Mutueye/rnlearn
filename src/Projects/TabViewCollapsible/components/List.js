@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import FlatList from './FlatList';
 import Variables from '../variables';
 import Constants from '../../../utils/Constants';
@@ -40,7 +40,9 @@ export default class Tab extends React.PureComponent {
           this.props.contentContainerStyle
         ]}
         renderItem={({item}) => (
-          <View style={styles.item} />
+          <View style={styles.item} >
+            <Text>{item.id.toString()}</Text>
+          </View>
         )}
       />
     );
