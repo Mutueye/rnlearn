@@ -17,6 +17,7 @@ export default class Tab extends React.PureComponent {
   }
   
   componentDidMount() {
+    //console.log('list mounted:::::')
     this.setState({
       dataSource: Array(this.props.listLength).fill().map((_, index) => ({id: index}))
     })
@@ -37,41 +38,45 @@ export default class Tab extends React.PureComponent {
     this.props.scrollY.removeListener(this.listener);
   }
   
+
   componentDidUpdate(prevProps) {
     if(this.props.currentTabKey === this.props.route.key) {
       if(this.props.currentTabKey != prevProps.currentTabKey) {
         this.onListShow()        
       }
-      /*
-      if(this.props.scrollY != prevProps.scrollY) {
-        if(this.props.scrollY >= this.props.collapsibleDistance) {
-          const targetScrollY = this.props.scrollY - this.props.collapsibleDistance;
-          this.scrollToOffset(this.props.scrollY - this.props.collapsibleDistance, false);
-          this.setState({listScrollY:targetScrollY});
-        }
-      }*/
     } else {
       if(this.props.route.key === prevProps.currentTabKey) {
-        this.setState({ listScrollY: prevProps.scrollY._value}, ()=> {
-          console.log('save ', this.props.route.key, ' listScrollY:::::::::', this.state.listScrollY)
-        })
+        let targetScrollY = this.props.scrollY._value - this.props.collapsibleDistance;
+        if(targetScrollY < 0) targetScrollY = 0
+        this.setState({listScrollY: targetScrollY});
+        /*
+        this.setState({ listScrollY: prevProps.scrollY._value - this.props.collapsibleDistance}, ()=> {
+          //console.log('save ', this.props.route.key, ' listScrollY:::::::::', this.state.listScrollY)
+        })*/
       }
+    }
+    
+    if(this.props.scrollRef != prevProps.scrollRef) {
+      console.log('this.props.scrollRef after update::::::',this.props.scrollRef)
     }
   }
   
   onListShow() {
-    console.log('LIST SCROLL Y:::::', this.state.listScrollY)
+    //console.log(this.props.route.key, ' LIST SCROLL Y:::::', this.state.listScrollY)
     //console.log('contentHeight:::::', this.state.contentHeight + Constants.tabBarHeight + Variables.collapsibleHeight)
     //this.props.setContentHeight(this.state.contentHeight + Constants.tabBarHeight + Variables.collapsibleHeight)
     this.setContentHeight(this.state.contentHeight)
-    if(this.props.scrollY.value < this.props.collapsibleDistance) {
+    if(this.props.scrollY._value < this.props.collapsibleDistance) {
       this.setState({
         listScrollY: 0
-      }, () => this.scrollToOffset(0, false) );
+      }, () => this.scrollToOffset(0, true) );
     } else {
-      this.props.setViewScroll(this.state.listScrollY + this.props.collapsibleDistance, false)
-      //this.scrollToOffset(this.state.listScrollY, false);
+      if(this.props.scrollRef) {
+        console.log('this.props.scrollRef', this.props.scrollRef)
+        this.props.scrollRef.scrollTo({y: this.state.listScrollY + this.props.collapsibleDistance, animated: false});
+      }
     }
+    //this.props.setViewScroll(this.state.listScrollY + this.props.collapsibleDistance)
   }
   
   /*

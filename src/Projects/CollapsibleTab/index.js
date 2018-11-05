@@ -29,6 +29,12 @@ export default class Index extends Component {
     };
     
     this.scrollY = new Animated.Value(0);
+    
+    this._scrollView = null;
+  }
+  
+  componentDidMount() {
+    //console.log('this._scrollView:::::',this._scrollView)
   }
 
   
@@ -51,6 +57,7 @@ export default class Index extends Component {
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
             setViewScroll={this._scrollToOffset}
+            scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
           />
@@ -63,6 +70,7 @@ export default class Index extends Component {
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
             setViewScroll={this._scrollToOffset}
+            scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
           />
@@ -75,6 +83,7 @@ export default class Index extends Component {
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
             setViewScroll={this._scrollToOffset}
+            scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
           />
@@ -89,12 +98,11 @@ export default class Index extends Component {
   };
   
   _scrollToOffset = (offset, animated = true) => {
-    //console.log('sv::::', this.svRef)
-    if (this.svRef && this.svRef._component && this.svRef._component.scrollTo) {
-      console.log('scrollToOffset')
-      this.svRef._component.scrollTo({x: 0, y: offset, animated });
+    console.log('sv:::::')
+    if(this._scrollView) {
+      console.log('sv::::', this._scrollView)
+      this._scrollView.scrollTo({x: 0, y: offset, animated });
     }
-    
   };
 
   render() {
@@ -117,20 +125,18 @@ export default class Index extends Component {
     return (
       <View style={styles.wrapper}>
         <Header title="顶部栏可折叠的标签页" isAbsoulte={true} hasBottomLine={true} />
-        <Animated.ScrollView
+        <ScrollView
           contentContainerStyle={contentStyle}
           style={styles.container}
           scrollEventThrottle={1}
-          ref={c => this.svRef = c}
-          onScroll={
-            Animated.event(
-              [{ nativeEvent: { contentOffset: { y: this.scrollY } } } ],
-              { 
-                useNativeDriver: true,
-                //listener: (evt) => console.log(evt.nativeEvent.contentOffset)
-              }
-            )
-          }
+          ref={(scrollView) => { this._scrollView = scrollView; }}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: this.scrollY } } } ],
+            { 
+              useNativeDriver: false,
+              //listener: (evt) => console.log(evt.nativeEvent.contentOffset)
+            }
+          )}
           showsVerticalScrollIndicator={true}
           stickyHeaderIndices={[0]}
           bounces={false}>
@@ -148,7 +154,7 @@ export default class Index extends Component {
               </View>
             </Animated.View>
           </View>
-        </Animated.ScrollView>
+        </ScrollView>
 
       </View>
     )
