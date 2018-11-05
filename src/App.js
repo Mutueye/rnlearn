@@ -8,9 +8,10 @@ import TabView from './Projects/TabView'
 import CollapsableTabView from './Projects/CollapsableTabView'
 import GestureHandler from './Projects/GestureHandler'
 import TabViewCollapsible from './Projects/TabViewCollapsible'
+import CollapsibleTab from './Projects/CollapsibleTab'
 
 export default class App extends Component {
   render() {
-    return <TabViewCollapsible />
+    return <CollapsibleTab />
   }
 }
