@@ -29,15 +29,9 @@ export default class Index extends Component {
     };
     
     this.scrollY = new Animated.Value(0);
-    
-    this._scrollView = null;
-  }
-  
-  componentDidMount() {
-    //console.log('this._scrollView:::::',this._scrollView)
+
   }
 
-  
   _handleIndexChange = (index) => {
     this.setState({
       currentTabKey: this.state.routes[index].key,
@@ -45,7 +39,7 @@ export default class Index extends Component {
     });
   }
   
-  _renderHeader = props => <Tabbar {...props}/>;
+  _renderTabBar = props => <Tabbar {...props}/>;
 
   _renderScene = ({route, navigationState}) => {
     switch(route.key) {
@@ -56,7 +50,6 @@ export default class Index extends Component {
             route={this.state.routes[0]} 
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
-            setViewScroll={this._scrollToOffset}
             scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
@@ -69,7 +62,6 @@ export default class Index extends Component {
             route={this.state.routes[1]} 
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
-            setViewScroll={this._scrollToOffset}
             scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
@@ -82,7 +74,6 @@ export default class Index extends Component {
             route={this.state.routes[2]} 
             currentTabKey={this.state.currentTabKey}
             setContentHeight={this._setContentHeight}
-            setViewScroll={this._scrollToOffset}
             scrollRef={this._scrollView}
             collapsibleDistance={collapsibleDistance}
             scrollY={this.scrollY}
@@ -95,14 +86,6 @@ export default class Index extends Component {
   
   _setContentHeight = (height) => {
     this.setState({contentHeight: height});
-  };
-  
-  _scrollToOffset = (offset, animated = true) => {
-    console.log('sv:::::')
-    if(this._scrollView) {
-      console.log('sv::::', this._scrollView)
-      this._scrollView.scrollTo({x: 0, y: offset, animated });
-    }
   };
 
   render() {
@@ -133,8 +116,10 @@ export default class Index extends Component {
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } } ],
             { 
+              //如果useNativeDriver=true, Animate.event()返回的不是函数，ScrollView报错
+              //如果使用Animated.View，是可以为true的，但此时又出现ref无法
+              //获取的BUG，真操蛋
               useNativeDriver: false,
-              //listener: (evt) => console.log(evt.nativeEvent.contentOffset)
             }
           )}
           showsVerticalScrollIndicator={true}
@@ -147,7 +132,7 @@ export default class Index extends Component {
                 <TabView
                   navigationState={this.state}
                   renderScene={this._renderScene}
-                  renderTabBar={this._renderHeader}
+                  renderTabBar={this._renderTabBar}
                   onIndexChange={index => this._handleIndexChange(index)}
                   initialLayout={{ width: Constants.screenWidth, height: 0 }}
                 />
@@ -172,7 +157,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     flex:1
-    //height: Constants.screenHeight + Variables.collapsibleHeight - Constants.headerHeight - Constants.statusBarHeight
   },
   inner: {
     width: '100%',
@@ -184,10 +168,6 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    backgroundColor: '#ffffff',
-    borderWidth: 0,
-    borderColor: '#00ff00',
-    overflow: 'hidden'
   },
   tabview: {
     height: Constants.screenHeight - Constants.headerHeight - Constants.statusBarHeight

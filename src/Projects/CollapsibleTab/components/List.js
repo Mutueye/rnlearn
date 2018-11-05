@@ -17,13 +17,11 @@ export default class Tab extends React.PureComponent {
   }
   
   componentDidMount() {
-    //console.log('list mounted:::::')
     this.setState({
       dataSource: Array(this.props.listLength).fill().map((_, index) => ({id: index}))
     })
-    if(this.props.currentTabKey === this.props.route.key) {
-      this.onListShow()
-    }
+    
+    if(this.props.currentTabKey === this.props.route.key) this.onListShow();
     
     this.listener = this.props.scrollY.addListener((scrollY) => {
       if (this.props.currentTabKey === this.props.route.key) {
@@ -31,14 +29,12 @@ export default class Tab extends React.PureComponent {
         this.scrollToOffset(scrollYValue, false);
       }
     });
-    
   }
   
   componentWillUnmount() {
     this.props.scrollY.removeListener(this.listener);
   }
   
-
   componentDidUpdate(prevProps) {
     if(this.props.currentTabKey === this.props.route.key) {
       if(this.props.currentTabKey != prevProps.currentTabKey) {
@@ -49,22 +45,11 @@ export default class Tab extends React.PureComponent {
         let targetScrollY = this.props.scrollY._value - this.props.collapsibleDistance;
         if(targetScrollY < 0) targetScrollY = 0
         this.setState({listScrollY: targetScrollY});
-        /*
-        this.setState({ listScrollY: prevProps.scrollY._value - this.props.collapsibleDistance}, ()=> {
-          //console.log('save ', this.props.route.key, ' listScrollY:::::::::', this.state.listScrollY)
-        })*/
       }
-    }
-    
-    if(this.props.scrollRef != prevProps.scrollRef) {
-      console.log('this.props.scrollRef after update::::::',this.props.scrollRef)
     }
   }
   
   onListShow() {
-    //console.log(this.props.route.key, ' LIST SCROLL Y:::::', this.state.listScrollY)
-    //console.log('contentHeight:::::', this.state.contentHeight + Constants.tabBarHeight + Variables.collapsibleHeight)
-    //this.props.setContentHeight(this.state.contentHeight + Constants.tabBarHeight + Variables.collapsibleHeight)
     this.setContentHeight(this.state.contentHeight)
     if(this.props.scrollY._value < this.props.collapsibleDistance) {
       this.setState({
@@ -76,27 +61,7 @@ export default class Tab extends React.PureComponent {
         this.props.scrollRef.scrollTo({y: this.state.listScrollY + this.props.collapsibleDistance, animated: false});
       }
     }
-    //this.props.setViewScroll(this.state.listScrollY + this.props.collapsibleDistance)
   }
-  
-  /*
-  componentWillReceiveProps(nextProps) {
-    
-    if(this.props.route.key == nextProps.currentTabKey) {
-      if(this.props.currentTabkey != nextProps.currentTabKey) {
-        this.onListShow()
-      }
-      
-      if(this.props.scrollY != nextProps.scrollY) {
-        if(this.props.scrollY >= this.props.collapsibleDistance) {
-          const targetScrollY = this.props.scrollY - this.props.collapsibleDistance;
-          this.scrollToOffset(this.props.scrollY - this.props.collapsibleDistance, false);
-          this.setState({listScrollY:targetScrollY});
-        }
-      }
-    }
-    
-  }*/
   
   static defaultProps = {
     listLength : 20,
@@ -108,7 +73,6 @@ export default class Tab extends React.PureComponent {
     if(contentHeight < Constants.screenHeight + this.props.collapsibleDistance) {
       tempHeight = Constants.screenHeight + this.props.collapsibleDistance
     }
-    //console.log('tempHeight::::', tempHeight)
     this.props.setContentHeight(tempHeight)
   }
   
