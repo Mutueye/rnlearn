@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   container: {
     height: Constants.statusBarHeight + Constants.headerHeight,
     width: '100%',
-    backgroundColor: Color(Colors.white).fade(0.5),
+    backgroundColor: Color(Colors.white).fade(0.05),
   },
   bottomLine: {
     borderBottomWidth: StyleSheet.hairlineWidth,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StatusBar, StyleSheet, Animated, PanResponder } from 'react-native';
+import { View, Text, ScrollView, StatusBar, StyleSheet, Animated, PanResponder, RefreshControl } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 import Constants from '../../utils/Constants';
@@ -8,12 +8,12 @@ import Colors from '../../utils/Colors';
 import List from './components/List';
 import Header from './components/header';
 import Tabbar from './components/tabbar';
-import CollapsibleHeader from './components/tabbar/collapsibleHeader'
+import CollapsibleHeader from './components/tabbar/collapsibleHeader';
+
+const collapsibleDistance = Variables.collapsibleHeight - Constants.headerHeight - Constants.statusBarHeight;
 
 export default class Index extends Component {
 
-  
-  
   constructor(props) {
     super(props)
     
@@ -24,16 +24,13 @@ export default class Index extends Component {
         { key: 'first', title: 'First' },
         { key: 'second', title: 'Second' },
         { key: 'third', title: 'Third'}
-      ]
+      ],
+      contentHeight: 0
     };
     
     this.scrollY = new Animated.Value(0);
-    this.scrollY.addListener(this._updateScroll);
   }
-  
-  _updateScroll = ({value}) => {
-    console.log(value)
-  };
+
   
   _handleIndexChange = (index) => {
     this.setState({
@@ -44,28 +41,87 @@ export default class Index extends Component {
   
   _renderHeader = props => <Tabbar {...props}/>;
 
-  _renderScene = SceneMap({
-    first: () => <List listLength={30} route={this.state.routes[0]} />,
-    second: () => <List listLength={20} route={this.state.routes[1]} />,
-    third: () => <List listLength={2} route={this.state.routes[2]} />
-  });
+  _renderScene = ({route, navigationState}) => {
+    switch(route.key) {
+      case 'first':
+        return (
+          <List 
+            listLength={30} 
+            route={this.state.routes[0]} 
+            currentTabKey={this.state.currentTabKey}
+            setContentHeight={this._setContentHeight}
+            setViewScroll={this._scrollToOffset}
+            collapsibleDistance={collapsibleDistance}
+            scrollY={this.scrollY}
+          />
+        )
+      case 'second':
+        return (
+          <List 
+            listLength={20} 
+            route={this.state.routes[1]} 
+            currentTabKey={this.state.currentTabKey}
+            setContentHeight={this._setContentHeight}
+            setViewScroll={this._scrollToOffset}
+            collapsibleDistance={collapsibleDistance}
+            scrollY={this.scrollY}
+          />
+        )
+      case 'third':
+        return (
+          <List 
+            listLength={2} 
+            route={this.state.routes[2]} 
+            currentTabKey={this.state.currentTabKey}
+            setContentHeight={this._setContentHeight}
+            setViewScroll={this._scrollToOffset}
+            collapsibleDistance={collapsibleDistance}
+            scrollY={this.scrollY}
+          />
+        )
+      default:
+        return null
+    }
+  }
   
-  _onMomentumScrollBegin = () =>  {
-    return console.log('begin::::');
+  _setContentHeight = (height) => {
+    this.setState({contentHeight: height});
   };
   
-  _onMomentumScrollEnd = () => {
-    return console.log('end::::');
+  _scrollToOffset = (offset, animated = true) => {
+    //console.log('sv::::', this.svRef)
+    if (this.svRef && this.svRef._component && this.svRef._component.scrollTo) {
+      console.log('scrollToOffset')
+      this.svRef._component.scrollTo({x: 0, y: offset, animated });
+    }
+    
   };
 
   render() {
+    const contentStyle = [styles.content, {
+      height: this.state.contentHeight
+    }]
+    
+    const innerStyle = [styles.inner, {
+      transform: [
+        {
+          translateY: this.scrollY.interpolate({
+            inputRange: [0, collapsibleDistance],
+            outputRange: [0, -1*collapsibleDistance],
+            extrapolate: 'clamp'
+          })
+        }
+      ]
+    }]
+    
     return (
       <View style={styles.wrapper}>
         <Header title="顶部栏可折叠的标签页" isAbsoulte={true} hasBottomLine={true} />
         <Animated.ScrollView
-          contentContainerStyle={styles.content}
+          contentContainerStyle={contentStyle}
           style={styles.container}
           scrollEventThrottle={1}
+          ref={c => this.svRef = c}
           onScroll={
             Animated.event(
               [{ nativeEvent: { contentOffset: { y: this.scrollY } } } ],
@@ -76,20 +132,22 @@ export default class Index extends Component {
             )
           }
           showsVerticalScrollIndicator={true}
-          stickyHeaderIndices={[0]}>
-          <View style={styles.inner}>
-            <View style={styles.collapsableBar} />
-            <View style={styles.tabview}>
-              <TabView
-                navigationState={this.state}
-                renderScene={this._renderScene}
-                renderTabBar={this._renderHeader}
-                onIndexChange={index => this._handleIndexChange(index)}
-                initialLayout={{ width: Constants.screenWidth, height: 0 }}
-              />
-            </View>
+          stickyHeaderIndices={[0]}
+          bounces={false}>
+          <View style={{width: '100%', flex:1}}>
+            <Animated.View style={innerStyle}>
+              <View style={styles.collapsableBar} />
+              <View style={styles.tabview}>
+                <TabView
+                  navigationState={this.state}
+                  renderScene={this._renderScene}
+                  renderTabBar={this._renderHeader}
+                  onIndexChange={index => this._handleIndexChange(index)}
+                  initialLayout={{ width: Constants.screenWidth, height: 0 }}
+                />
+              </View>
+            </Animated.View>
           </View>
-          <View style={{width: '100%', height: 1000, backgroundColor: '#ff00ff'}}></View>
         </Animated.ScrollView>
 
       </View>
@@ -111,10 +169,8 @@ const styles = StyleSheet.create({
     //height: Constants.screenHeight + Variables.collapsibleHeight - Constants.headerHeight - Constants.statusBarHeight
   },
   inner: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0
+    width: '100%',
+    height: 'auto'
   },
   collapsableBar: {
     height: Variables.collapsibleHeight,
@@ -122,7 +178,10 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    height: 9999
+    backgroundColor: '#ffffff',
+    borderWidth: 0,
+    borderColor: '#00ff00',
+    overflow: 'hidden'
   },
   tabview: {
     height: Constants.screenHeight - Constants.headerHeight - Constants.statusBarHeight
