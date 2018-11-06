@@ -69,28 +69,26 @@ export default class Tab extends React.PureComponent {
   
   componentWillReceiveProps(nextProps) {
     //tab即将跳转到本list
-    //if(nextProps.currentTabKey === this.props.route.key) {
-      //if(!this.state.isListCurrent) this.setState({isListCurrent: true})//this.onListShow()
-    //} else 
     if(nextProps.currentTabKey === this.props.route.key && this.props.currentTabKey != this.props.route.key) {
-      this.setContentHeight(this.state.contentHeight)
+      this.onListShow();
     }
-    
-    if(nextProps.currentTabKey != this.props.route.key && this.props.currentTabKey === this.props.route.key) { //tab即将离开本list
+    //tab即将离开本list
+    if(nextProps.currentTabKey != this.props.route.key && this.props.currentTabKey === this.props.route.key) { 
       let targetScrollY = this.props.scrollY._value - this.props.collapsibleDistance;
       if(targetScrollY < 0) targetScrollY = 0
       //console.log('save', this.props.route.key, 'scrollY', targetScrollY);
       this.setState({listScrollY: targetScrollY});
     }
   }
-  
+  /*
   componentDidUpdate(prevProps) {
     if(this.props.currentTabKey === this.props.route.key && this.props.currentTabKey != prevProps.currentTabKey) {
       this.onListShow()
     }
-  }
+  }*/
   
   onListShow() {
+    this.setContentHeight(this.state.contentHeight)
     if(this.props.scrollY._value < this.props.collapsibleDistance - 1) {
       //console.log(this.props.route.key, 'scroll to 0')
       this.setState({

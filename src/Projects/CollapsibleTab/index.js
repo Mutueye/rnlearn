@@ -85,7 +85,7 @@ export default class Index extends Component {
   }
   
   _setContentHeight = (height) => {
-    this.setState({contentHeight: height}, ()=>console.log('height changed to', height));
+    this.setState({contentHeight: height});
   };
 
   render() {
