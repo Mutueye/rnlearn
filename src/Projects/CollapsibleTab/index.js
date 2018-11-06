@@ -85,7 +85,7 @@ export default class Index extends Component {
   }
   
   _setContentHeight = (height) => {
-    this.setState({contentHeight: height});
+    this.setState({contentHeight: height}, ()=>console.log('height changed to', height));
   };
 
   render() {
@@ -117,7 +117,7 @@ export default class Index extends Component {
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } } ],
             { 
               //如果useNativeDriver=true, Animate.event()返回的不是函数，ScrollView报错
-              //如果使用Animated.View，是可以为true的，但此时又出现ref无法
+              //如果使用Animated.ScrollView，是可以为true的，但此时又出现ref无法
               //获取的BUG，真操蛋
               useNativeDriver: false,
             }

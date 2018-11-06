@@ -12,7 +12,9 @@ export default class Tab extends React.PureComponent {
     this.state = {
       dataSource: [],
       listScrollY: 0,
-      contentHeight: 0
+      contentHeight: 0,
+
+      needAdjustOffset: false 
     };
   }
   
@@ -25,8 +27,22 @@ export default class Tab extends React.PureComponent {
     
     this.listener = this.props.scrollY.addListener((scrollY) => {
       if (this.props.currentTabKey === this.props.route.key) {
-        const scrollYValue = scrollY.value - this.props.collapsibleDistance >= 0 ? scrollY.value - this.props.collapsibleDistance : 0;
-        this.scrollToOffset(scrollYValue, false);
+        //切换tab页面时，顶层ScrollView高度不能及时更改，通过
+        //此参数判断是否需要顶层ScrollView持续滚动到上次保存的位置this.state.listScrollY,
+        //还是恢复正常，跟随ScrollView的offset滚动当前list
+        if(this.state.needAdjustOffset) {
+          //console.log('adjusting offset')
+          const targetOffset = this.state.listScrollY + this.props.collapsibleDistance
+          if(scrollY.value > targetOffset - 1 && scrollY.value < targetOffset + 1) {
+            this.setState({needAdjustOffset: false});
+          } else {
+            if(this.props.scrollRef) this.props.scrollRef.scrollTo({y: targetOffset, animated: false});
+          }
+        } else {
+          const scrollYValue = scrollY.value - this.props.collapsibleDistance >= 0 ? scrollY.value - this.props.collapsibleDistance : 0;
+          //console.log(this.props.route.key, 'listener scrollY value', scrollYValue)
+          this.scrollToOffset(scrollYValue, false);
+        }
       }
     });
   }
@@ -35,6 +51,7 @@ export default class Tab extends React.PureComponent {
     this.props.scrollY.removeListener(this.listener);
   }
   
+  /*
   componentDidUpdate(prevProps) {
     if(this.props.currentTabKey === this.props.route.key) {
       if(this.props.currentTabKey != prevProps.currentTabKey) {
@@ -44,21 +61,49 @@ export default class Tab extends React.PureComponent {
       if(this.props.route.key === prevProps.currentTabKey) {
         let targetScrollY = this.props.scrollY._value - this.props.collapsibleDistance;
         if(targetScrollY < 0) targetScrollY = 0
+        console.log('save', this.props.route.key, 'scrollY', targetScrollY);
         this.setState({listScrollY: targetScrollY});
       }
+    }
+  }*/
+  
+  componentWillReceiveProps(nextProps) {
+    //tab即将跳转到本list
+    //if(nextProps.currentTabKey === this.props.route.key) {
+      //if(!this.state.isListCurrent) this.setState({isListCurrent: true})//this.onListShow()
+    //} else 
+    if(nextProps.currentTabKey === this.props.route.key && this.props.currentTabKey != this.props.route.key) {
+      this.setContentHeight(this.state.contentHeight)
+    }
+    
+    if(nextProps.currentTabKey != this.props.route.key && this.props.currentTabKey === this.props.route.key) { //tab即将离开本list
+      let targetScrollY = this.props.scrollY._value - this.props.collapsibleDistance;
+      if(targetScrollY < 0) targetScrollY = 0
+      //console.log('save', this.props.route.key, 'scrollY', targetScrollY);
+      this.setState({listScrollY: targetScrollY});
+    }
+  }
+  
+  componentDidUpdate(prevProps) {
+    if(this.props.currentTabKey === this.props.route.key && this.props.currentTabKey != prevProps.currentTabKey) {
+      this.onListShow()
     }
   }
   
   onListShow() {
-    this.setContentHeight(this.state.contentHeight)
-    if(this.props.scrollY._value < this.props.collapsibleDistance) {
+    if(this.props.scrollY._value < this.props.collapsibleDistance - 1) {
+      //console.log(this.props.route.key, 'scroll to 0')
       this.setState({
         listScrollY: 0
       }, () => this.scrollToOffset(0, true) );
     } else {
       if(this.props.scrollRef) {
-        console.log('this.props.scrollRef', this.props.scrollRef)
-        this.props.scrollRef.scrollTo({y: this.state.listScrollY + this.props.collapsibleDistance, animated: false});
+        //console.log('this.props.scrollRef', this.props.scrollRef)
+        //this.scrollToOffset(this.state.listScrollY, false);
+        this.setState({needAdjustOffset: true}, ()=>{
+          this.props.scrollRef.scrollTo({y: this.state.listScrollY + this.props.collapsibleDistance, animated: false});
+          //console.log(this.props.route.key, 'load scrollY and scroll to', this.state.listScrollY)
+        })
       }
     }
   }
@@ -70,9 +115,10 @@ export default class Tab extends React.PureComponent {
   
   setContentHeight = (contentHeight) => {
     let tempHeight = contentHeight + Constants.tabBarHeight + Variables.collapsibleHeight;
-    if(contentHeight < Constants.screenHeight + this.props.collapsibleDistance) {
-      tempHeight = Constants.screenHeight + this.props.collapsibleDistance
+    if(contentHeight < Constants.screenHeight + this.props.collapsibleDistance + 1) {
+      tempHeight = Constants.screenHeight + this.props.collapsibleDistance + 1
     }
+    //console.log(this.props.route.key, 'set content height', tempHeight)
     this.props.setContentHeight(tempHeight)
   }
   
@@ -86,6 +132,8 @@ export default class Tab extends React.PureComponent {
         contentContainerStyle={styles.content}
         bounces={false}
         scrollEnabled={false}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
         onContentSizeChange={(contentWidth, contentHeight)=>{
           this.setState({
             contentHeight: contentHeight
