@@ -5,16 +5,18 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "rnios" : "react-native run-ios --simulator='iPhone 6s'"
+    "rnios": "react-native run-ios --simulator='iPhone 6s'"
   },
   "dependencies": {
     "color": "^3.1.0",
+    "immutability-helper": "^2.9.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "react": "16.6.0-alpha.8af6728",
     "react-native": "0.57.3",
     "react-native-cards": "^1.1.4",
+    "react-native-cn-richtext-editor": "^1.0.19",
     "react-native-elements": "^0.19.1",
     "react-native-extended-stylesheet": "^0.10.0",
     "react-native-gesture-handler": "^1.0.8",
@@ -26,7 +28,9 @@
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
-    "uuid": "^3.2.1"
+    "shortid": "^2.2.14",
+    "uuid": "^3.2.1",
+    "xmldoc": "^1.1.2"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

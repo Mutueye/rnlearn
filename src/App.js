@@ -11,9 +11,10 @@ import TabViewCollapsible from './Projects/TabViewCollapsible'
 import CollapsibleTab from './Projects/CollapsibleTab'
 import ScrollViewTest from './Projects/ScrollViewTest'
 import NestedTabView from './Projects/NestedTabView'
+import RichText from './Projects/RichText'
 
 export default class App extends Component {
   render() {
-    return <NestedTabView />
+    return <CollapsibleTab />
   }
 }
